@@ -10,8 +10,13 @@ const App = () => {
     event.preventDefault()
     console.log('button clicked', event.target)
     const newPerson = { name: newName }
-    setPersons(persons.concat(newPerson))
-    setNewName('')
+    if(persons.some(person => person.name === newName)) {
+      alert(`${newName} is already added to phonebook`)
+    }
+    else{
+      setPersons(persons.concat(newPerson))
+      setNewName('')
+    }
   }
 
   const handleNameChange = (event) => {
@@ -30,7 +35,7 @@ const App = () => {
           <button type="submit">add</button>
         </div>
       </form>
-      
+
       <h2>Numbers</h2>
         <ul>
           {persons.map(person => <li key={person.name}>{person.name}</li>)}
