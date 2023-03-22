@@ -30,6 +30,7 @@ const App = () => {
           <button type="submit">add</button>
         </div>
       </form>
+      
       <h2>Numbers</h2>
         <ul>
           {persons.map(person => <li key={person.name}>{person.name}</li>)}
