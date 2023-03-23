@@ -1,16 +1,5 @@
 import Course from "./components/course"
 
-const Courses = ({courses}) => {
-  return (
-    <div>
-    <Course course={courses[0]} />
-    <Course course={courses[1]} />
-    </div>
-    )
-
-}
-
-
 const App = () => {
 
   const courses = [
@@ -61,7 +50,10 @@ const App = () => {
   return (
   <div>
     <h1>Web development curriculum</h1>  
-    <Courses courses={courses} />
+    {courses.map(course => (
+      <Course key={course.id} course={course} />
+      ))
+    }
   </div>
   )
 }
