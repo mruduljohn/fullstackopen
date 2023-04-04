@@ -129,7 +129,7 @@ const App = () => {
       newNum={newNum} 
       handleNumChange={handleNumChange}/>
       <h2>Numbers</h2>
-      <Persons filteredpersons={filteredpersons}
+      <Persons persons={filteredpersons}
       deletePerson={deletePerson} />
     </div>
   )
