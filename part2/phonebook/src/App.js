@@ -27,34 +27,55 @@ const App = () => {
 
   useEffect(getAllhook, [])
 
-  const addPersonToServer = (newPerson) => {
-    axios
-      .post('http://localhost:3001/persons', newPerson)
-      .then(response => {
-        setPersons(persons.concat(response.data))
-        setNewName('')
-        setNewNum('')
-      })
-  }
-
-
   const addPerson = (event) => {
     event.preventDefault()
     console.log('button click', event.target)
     const newPerson = { name: newName , number: newNum }
-    if(persons.some(person => person.name === newName && person.number === newNum)) {
-      alert(`${newName} is already added to phonebook with same number ${newNum}`)
+    
+    const checkPerson = persons.find(person => person.name.toLowerCase() === newPerson.name.toLowerCase())
+    if(checkPerson && checkPerson.number === newNum) {
+        Alert(newPerson)
     }
-    else if(persons.some(person => person.name === newName)) {
-      alert(`${newName} is already added to phonebook with different number`)
+    if(checkPerson && checkPerson.number !== newNum) {
+        const confirmneNum = window.confirm(`${checkPerson.name} is already added to phonebook, do you want to replace the old number with a new one?`)
+        if(confirmneNum) {
+            const UpdatedPerson = { ...checkPerson, number: newNum }  
+            personService
+              .update(checkPerson.id, UpdatedPerson)
+              .then(returnedPerson => {
+                setPersons(persons.map(person => person.id !== checkPerson.id ? person : returnedPerson))
+                setNotification(`Updated ${checkPerson.name}`)
+                setTimeout(() => {
+                  setNotification(null),4000)
+                })
+              }
     }
-    else if(persons.some(person => person.number === newNum)) {
-      alert(`${newNum} is already added to phonebook with different name`)
-    }
-    else{
-      addPersonToServer(newPerson)
-    }
+
+    if(!checkPerson) {
+      personService
+        .create(newPerson)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+        })
+        .catch(error =>{
+          setNotification({
+            text : error.response.data.error,
+            type: 'error'
+          })
+          setTimeout(() =>{
+            setNotification(null)},4000)
+          })
+          setNotification({
+            text:`${newPerson.name} added to phonebook`,
+            type:'notification'
+          })
+          setTimeout(() =>{
+            setNotification(null)},4000)
+          }
+          setNewName('')
+          setNewNum('')
   }
+
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
