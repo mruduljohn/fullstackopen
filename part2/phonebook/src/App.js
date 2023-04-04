@@ -46,18 +46,18 @@ const App = () => {
                 setNotification(`Updated ${checkPerson.name}`)
                 setTimeout(() => setNotification(null),4000)
                 })
-                .catch(error => {
+                .catch(error =>
                   setPersons(persons.filter(person => person.name !== checkPerson.name))
                 )
                 setNotification({
                   text:`${checkPerson.name} was already removed from server`,
                   type:'error'
                 })
-                setTimeout(() => setNotification(null),4000)
+                setTimeout(() => {setNotification(null)},4000)
               }
 
       }
-    }
+    
 
     if(!checkPerson) {
       personService
