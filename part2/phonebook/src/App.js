@@ -15,16 +15,17 @@ const App = () => {
   const [notification, setNotification] = useState(null)
 
   const getAllhook = () => {
-
-
-  useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
-  }, [])
+      .catch(error => {
+        console.error(error)
+      })
+  }
 
+  useEffect(getAllhook, [])
 
   const addPersonToServer = (newPerson) => {
     axios
