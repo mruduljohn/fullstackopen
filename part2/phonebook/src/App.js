@@ -1,49 +1,21 @@
-import { useState , useEffect } from 'react'
+import React,{ useState , useEffect } from 'react'
 import axios from 'axios'
-
-const Filter = ({newFilter, handleFilterChange}) => {
-  return (
-    <div>
-        filter shown with <input value={newFilter} onChange={handleFilterChange} />
-    </div>
-  )
-}
-
-const PersonForm = ({addPerson,newName, newNum, handleNameChange, handleNumChange}) => {
-  return (
-    <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange}/>
-        </div>
-        <div> 
-          number: <input value={newNum} onChange={handleNumChange}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-    </form>
-  )
-}
-
-const Persons = ({filteredpersons}) => {
-  return (
-    <ul>
-          {filteredpersons.map(person => (
-            <li key={person.name}>
-              {person.name} {person.number}
-            </li>
-          ))}
-    </ul>
-  )
-}
-
-
+import Alert from './components/Alert'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
+import Notification from './components/Notification'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNum, setNewNum] = useState('')
   const [newFilter, setNewFilter] = useState('')
+  const [notification, setNotification] = useState(null)
+
+  const getAllhook = () => {
+
 
   useEffect(() => {
     axios
