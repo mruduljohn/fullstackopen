@@ -39,7 +39,6 @@ const Persons = ({filteredpersons}) => {
 
 
 
-
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
@@ -53,6 +52,17 @@ const App = () => {
         setPersons(response.data)
       })
   }, [])
+
+
+  const addPersonToServer = (newPerson) => {
+    axios
+      .post('http://localhost:3001/persons', newPerson)
+      .then(response => {
+        setPersons(persons.concat(response.data))
+        setNewName('')
+        setNewNum('')
+      })
+  }
 
 
   const addPerson = (event) => {
@@ -69,9 +79,7 @@ const App = () => {
       alert(`${newNum} is already added to phonebook with different name`)
     }
     else{
-      setPersons(persons.concat(newPerson))
-      setNewName('')
-      setNewNum('')
+      addPersonToServer(newPerson)
     }
   }
 
