@@ -36,18 +36,27 @@ const App = () => {
         Alert(newPerson)
     }
     if(checkPerson && checkPerson.number !== newNum) {
-        const confirmneNum = window.confirm(`${checkPerson.name} is already added to phonebook, do you want to replace the old number with a new one?`)
-        if(confirmneNum) {
+        const confirmnewNum = window.confirm(`${checkPerson.name} is already added to phonebook, do you want to replace the old number with a new one?`)
+        if(confirmnewNum) {
             const UpdatedPerson = { ...checkPerson, number: newNum }  
             personService
               .update(checkPerson.id, UpdatedPerson)
               .then(returnedPerson => {
                 setPersons(persons.map(person => person.id !== checkPerson.id ? person : returnedPerson))
                 setNotification(`Updated ${checkPerson.name}`)
-                setTimeout(() => {
-                  setNotification(null),4000)
+                setTimeout(() => setNotification(null),4000)
                 })
+                .catch(error => {
+                  setPersons(persons.filter(person => person.name !== checkPerson.name))
+                )
+                setNotification({
+                  text:`${checkPerson.name} was already removed from server`,
+                  type:'error'
+                })
+                setTimeout(() => setNotification(null),4000)
               }
+
+      }
     }
 
     if(!checkPerson) {
