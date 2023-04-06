@@ -52,26 +52,18 @@ app.delete('/api/persons/:id', (req, res) => {
     res.status(204).end()
 })
 
-const generateId = () => {
-    const maxId = persons.length > 0
-    ? Math.max(...persons.map(n => n.id))
-    : 0
-    return maxId + 1
-}
-
-
 app.post('/api/persons', (req, res) => {
     const body = req.body
-    if (!body.content) {
+    if (!body.name || !body.number) {
         return res.status(400).json({
-            error: 'content missing'
+            error: 'name or number missing'
         })
     }
 
     const person = {
-    content : body.content,
-    important : body.important || false,
-    id : generateId(),
+        id : Math.floor(Math.random()*1000000),
+        name : body.name,
+        number : body.number
     }
     persons = persons.concat(person)
     res.json(person)
