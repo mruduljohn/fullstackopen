@@ -49,7 +49,7 @@ app.delete('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id)
     persons = persons.filter(person => person.id !== id)
   
-    response.status(204).end()
+    res.status(204).end()
 })
 
 const generateId = () => {
