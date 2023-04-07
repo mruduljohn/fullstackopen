@@ -1,12 +1,12 @@
 import React from 'react';
 
-const Filter = ({ filter, handleFilter }) => (
+const Filter = ({ newfilter, handleFilterchange }) => (
   <div>
     <form>
       <div>
         filter shown with <input 
-          value={filter} 
-          onChange={handleFilter}
+          value={newfilter} 
+          onChange={handleFilterchange}
         />
       </div>
     </form>
