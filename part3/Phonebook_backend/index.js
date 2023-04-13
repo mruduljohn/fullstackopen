@@ -1,3 +1,4 @@
+
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
@@ -37,9 +38,15 @@ app.get('/info', (req, res) => {
                   <p>${date}</p>` 
     res.send(info)
 })
+
+const Person = require('./models/Person')
+
 app.get('/api/persons', (req, res) => {
+  Person.find({}).then(persons => {
     res.json(persons)
   })
+})
+
 app.get('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id)
     const person = persons.find(person => {
