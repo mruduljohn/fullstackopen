@@ -1,6 +1,7 @@
 
 const express = require('express')
 const morgan = require('morgan')
+const Person = require('./models/Person')
 const app = express()
 
 app.use(express.static('build'))
@@ -39,7 +40,7 @@ app.get('/info', (req, res) => {
     res.send(info)
 })
 
-const Person = require('./models/Person')
+
 
 app.get('/api/persons', (req, res) => {
   Person.find({}).then(persons => {
