@@ -92,7 +92,12 @@ app.post('/api/persons', (req, res,next) => {
         .then(savedAndFormattedContact => {
             res.json(savedAndFormattedContact)
         })
-        .catch(error => next(error))
+        .catch(error =>{
+            if(error.name === 'ValidationError'){
+                return res.status(400).json({error: error.message})
+            }
+        next(error)
+    })
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
@@ -109,6 +114,7 @@ app.put('/api/persons/:id', (req, res, next) => {
         }else{
             res.status(404).end()
         }
+
     })
     .catch(error => next(error))
 })
