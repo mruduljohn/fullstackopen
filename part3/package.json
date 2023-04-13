@@ -3,5 +3,8 @@
     "dotenv": "^16.0.3",
     "mongodb": "^5.2.0",
     "mongoose": "^7.0.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.38.0"
   }
 }
