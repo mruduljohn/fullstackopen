@@ -17,9 +17,14 @@
     "express": "^4.18.2",
     "lodash": "^4.17.21",
     "mongoose": "^7.2.2",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "supertest": "^6.3.3"
   },
   "devDependencies": {
     "jest": "^29.5.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "globalTeardown": "./tests/teardown.js"
   }
 }
