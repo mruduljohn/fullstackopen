@@ -62,4 +62,25 @@ describe('Blog list', () => {
     const titles = blogsAfterPost.map(blog => blog.title);
     expect(titles).toContain(newBlog.title);
   });
+  test('creating a new blog post with missing likes property', async () => {
+    const newBlog = {
+      title: 'New Blog',
+      author: 'John Doe',
+      url: 'https://example.com/new-blog',
+    };
+  
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+  
+    const response = await api.get('/api/blogs');
+    const blogs = response.body;
+  
+    expect(blogs).toHaveLength(initialBlogs.length + 1);
+  
+    const createdBlog = blogs.find(blog => blog.title === newBlog.title);
+    expect(createdBlog.likes).toBe(0);
+  });
 });
