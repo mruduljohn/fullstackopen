@@ -1,3 +1,4 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
@@ -6,6 +7,7 @@ const Blog = require('../models/blog');
 const helper = require('./test_helper');
 const { initialBlogs, nonExistingId, blogsInDb } = require('./test_helper');
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 // const initialBlogs = [
 //     {
 //       title: 'First Blog',
@@ -43,15 +45,19 @@ describe('Blog list', () => {
     expect(response.body[0]._id).toBeUndefined();
   });
   test('creating a new blog post', async () => {
+    const user = await User.findOne({});
     const newBlog = {
       title: 'Test Blog',
       author: 'Test Author',
       url: 'https://example.com',
       likes: 10,
     };
-
+    
+    const token = jwt.sign({ id: user._id }, process.env.SECRET);
+  
     const response = await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`) // Attach the token in the Authorization header
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -70,13 +76,17 @@ describe('Blog list', () => {
       author: 'Born Doe',
       url: 'https://example.com/news-blogs',
     };
-  
+    
+    const user = await User.findOne({}); // Replace with the appropriate code to find an existing user from your database
+    const token = jwt.sign({ id: user._id }, process.env.SECRET);
+
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
-  
+    
     const response = await api.get('/api/blogs');
     const blogs = response.body;
   
