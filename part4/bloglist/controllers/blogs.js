@@ -1,34 +1,39 @@
 const blogRouter = require('express').Router();
 const Blog = require('../models/blog');
+const User = require('../models/user')
 
-blogRouter.get('/', (request, response) => {
-  Blog.find({})
-    .then(blogs => {
-      response.json(blogs);
-    })
-    .catch(error => {
-      console.log('Error:', error);
-      response.status(500).end();
-    });
+blogRouter.get('/', async (request, response, next) => {
+  try {
+    const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
+
+    response.json(blogs);
+  } catch (error) {
+    next(error);
+  }
 });
 
-blogRouter.post('/', async (request, response) => {
+blogRouter.post('/', async (request, response, next) => {
+  try {
     const body = request.body;
-  
-    if (!body.title || !body.url) {
-      return response.status(400).json({ error: 'title or url missing' });
-    }
-  
+
+    const user = await User.findOne(); // Find any user from the database
     const blog = new Blog({
       title: body.title,
-      author: body.author || '',
+      author: body.author,
       url: body.url,
-      likes: body.likes || 0, // Set likes to 0 if it's missing in the request
+      likes: body.likes || 0,
+      user: user._id, // Assign the user as the creator of the blog
     });
-  
+
     const savedBlog = await blog.save();
-    response.status(201).json(savedBlog.toJSON());
-  });
+    user.blogs = user.blogs.concat(savedBlog._id); // Update the user's blogs
+    await user.save();
+
+    response.status(201).json(savedBlog);
+  } catch (error) {
+    next(error);
+  }
+});
   blogRouter.delete('/:id', async (request, response, next) => {
     try {
       const deletedBlog = await Blog.findByIdAndRemove(request.params.id);

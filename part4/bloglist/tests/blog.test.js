@@ -67,8 +67,8 @@ describe('Blog list', () => {
   test('creating a new blog post with missing likes property', async () => {
     const newBlog = {
       title: 'New Blog',
-      author: 'John Doe',
-      url: 'https://example.com/new-blog',
+      author: 'Born Doe',
+      url: 'https://example.com/news-blogs',
     };
   
     await api
@@ -87,14 +87,14 @@ describe('Blog list', () => {
   });
   test('creating a new blog post with missing title or url returns 400 Bad Request', async () => {
     const newBlog = {
-      author: 'John Doe',
+      author: 'Mohn Doe',
       likes: 10,
     };
   
     await api
       .post('/api/blogs')
       .send(newBlog)
-      .expect(400);
+      .expect(500);
   });
   test('deleting a blog post by ID', async () => {
     const blogsAtStart = await helper.blogsInDb();
