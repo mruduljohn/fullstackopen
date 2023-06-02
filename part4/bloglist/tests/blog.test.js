@@ -134,7 +134,7 @@ describe('User management', () => {
     await User.deleteMany({}); 
     await User.insertMany(helper.initialUsers);
   });
-  test('creating a new user', async () => {
+  test('creating a new user with valid data', async () => {
     const newUser = {
       username: 'testuser',
       name: 'Test User',
@@ -153,6 +153,74 @@ describe('User management', () => {
     const usernames = usersAfterPost.map((user) => user.username);
     expect(usernames).toContain(newUser.username);
   });
+  test('creating a new user fails with missing username', async () => {
+    const newUser = {
+      name: 'Test User',
+      password: 'testpassword'
+    };
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+  });
+
+  test('creating a new user fails with missing password', async () => {
+    const newUser = {
+      username: 'testuser',
+      name: 'Test User'
+    };
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+  });
+
+  test('creating a new user fails with short username', async () => {
+    const newUser = {
+      username: 'te',
+      name: 'Test User',
+      password: 'testpassword'
+    };
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+  });
+
+  test('creating a new user fails with short password', async () => {
+    const newUser = {
+      username: 'testuser',
+      name: 'Test User',
+      password: 'pw'
+    };
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+  });
+
+  test('creating a new user fails with duplicate username', async () => {
+    const existingUser = helper.initialUsers[0];
+    const newUser = {
+      username: existingUser.username,
+      name: 'Test User',
+      password: 'testpassword'
+    };
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+  });
 
   test('getting all users', async () => {
     const response = await api.get('/api/users').expect(200).expect('Content-Type', /application\/json/);
@@ -160,3 +228,7 @@ describe('User management', () => {
     expect(response.body).toHaveLength(helper.initialUsers.length);
   });
 });
+
+module.exports={
+  api,
+};

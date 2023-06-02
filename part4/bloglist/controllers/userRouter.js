@@ -6,6 +6,23 @@ const User = require('../models/user');
 userRouter.post('/', async (request, response, next) => {
     try {
       const body = request.body;
+        // Check if both username and password are provided
+        if (!body.username || !body.password) {
+            return response.status(400).json({ error: 'Both username and password are required' });
+          }
+      
+          // Check if username and password meet the minimum length requirements
+          if (body.username.length < 3 || body.password.length < 3) {
+            return response.status(400).json({ error: 'Username and password must be at least 3 characters long' });
+          }
+      
+          // Check if the username is already taken
+          const existingUser = await User.findOne({ username: body.username });
+          if (existingUser) {
+            return response.status(400).json({ error: 'Username is already taken' });
+          }
+
+      
       const passwordHash = await bcrypt.hash(body.password, 10);
   
       const newUser = new User({
