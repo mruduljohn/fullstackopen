@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose-unique-validator": "^4.0.0"
+  }
+}

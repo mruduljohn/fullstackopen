@@ -5,7 +5,7 @@ const api = supertest(app);
 const Blog = require('../models/blog');
 const helper = require('./test_helper');
 const { initialBlogs, nonExistingId, blogsInDb } = require('./test_helper');
-
+const User = require('../models/user')
 // const initialBlogs = [
 //     {
 //       title: 'First Blog',
@@ -127,5 +127,36 @@ describe('Blog list', () => {
     const blogsAtEnd = await blogsInDb();
     const updatedBlog = blogsAtEnd.find((blog) => blog.id === blogToUpdate.id);
     expect(updatedBlog.likes).toBe(updatedLikes);
+  });
+});
+describe('User management', () => {
+  beforeEach(async () => {
+    await User.deleteMany({}); 
+    await User.insertMany(helper.initialUsers);
+  });
+  test('creating a new user', async () => {
+    const newUser = {
+      username: 'testuser',
+      name: 'Test User',
+      password: 'testpassword'
+    };
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(201)
+      .expect('Content-Type', /application\/json/);
+
+    const usersAfterPost = await helper.usersInDb();
+    expect(usersAfterPost).toHaveLength(helper.initialUsers.length + 1);
+
+    const usernames = usersAfterPost.map((user) => user.username);
+    expect(usernames).toContain(newUser.username);
+  });
+
+  test('getting all users', async () => {
+    const response = await api.get('/api/users').expect(200).expect('Content-Type', /application\/json/);
+
+    expect(response.body).toHaveLength(helper.initialUsers.length);
   });
 });

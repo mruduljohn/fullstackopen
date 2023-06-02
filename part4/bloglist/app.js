@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const blogRouter = require('./controllers/blogs');
 const Blog = require('./models/blog');
+const userRouter = require('./controllers/userRouter');
 
 const mongoUrl = 'mongodb+srv://phonebook:fireon123@phonebook.e7q880r.mongodb.net/?retryWrites=true&w=majority';
 mongoose.connect(mongoUrl);
@@ -21,6 +22,7 @@ app.get('/api/blogs', async (request, response, next) => {
   });
   
 app.use('/api/blogs', blogRouter);
+app.use('/api/users', userRouter);
 
 module.exports = app;
 
