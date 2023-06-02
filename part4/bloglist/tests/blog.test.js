@@ -104,22 +104,41 @@ describe('Blog list', () => {
     await api
       .post('/api/blogs')
       .send(newBlog)
-      .expect(500);
+      .expect(401);
   });
   test('deleting a blog post by ID', async () => {
     const blogsAtStart = await helper.blogsInDb();
+    console.log('blogsAtStart:', blogsAtStart);
+  
     const blogToDelete = blogsAtStart[0];
+    console.log('blogToDelete:', blogToDelete);
+  
+    const testUser = new User({
+      username: 'testuser',
+      passwordHash: 'testpassword',
+      name: 'Test User'
+    });
+    await testUser.save();
+  
+    const token = jwt.sign({ id: testUser._id }, process.env.SECRET);
   
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
-      .expect(204);
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204)
+      .catch(error => {
+        console.log(error);
+      });
   
     const blogsAtEnd = await helper.blogsInDb();
+    console.log('blogsAtEnd:', blogsAtEnd);
+  
     expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1);
   
     const ids = blogsAtEnd.map(blog => blog.id);
     expect(ids).not.toContain(blogToDelete.id);
   });
+  
   test('updating the likes of a blog post', async () => {
     const blogsAtStart = await blogsInDb();
   

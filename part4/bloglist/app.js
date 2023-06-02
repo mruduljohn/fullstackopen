@@ -6,7 +6,8 @@ const blogRouter = require('./controllers/blogs');
 const Blog = require('./models/blog');
 const userRouter = require('./controllers/userRouter');
 const loginRouter = require('./controllers/login');
-
+const middleware = require('./utils/middleware');
+const userExtractor = require('./middleware/userExtractor');
 
 const mongoUrl = 'mongodb+srv://phonebook:fireon123@phonebook.e7q880r.mongodb.net/?retryWrites=true&w=majority';
 mongoose.connect(mongoUrl);
@@ -26,6 +27,10 @@ app.get('/api/blogs', async (request, response, next) => {
 app.use('/api/blogs', blogRouter);
 app.use('/api/users', userRouter);
 app.use('/api/login', loginRouter);
+app.use(express.json());
+app.use(middleware.tokenExtractor);
+app.use(middleware.errorHandler);
+app.use('/api/blogs', userExtractor, blogRouter);
 
 module.exports = app;
 
